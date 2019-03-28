@@ -15,9 +15,9 @@ class App extends Component {
         <Drawer>
           <Switch>
             <Route path="/login" exact component={Login} />
-            <Route path="/user" exact component={User} />
-            <Route path="/product" exact component={Product} />
-            <Route path="/order" exact component={Order} />
+            <Route path="/users" exact component={User} />
+            <Route path="/products" exact component={Product} />
+            <Route path="/orders" exact component={Order} />
             <Route path="/" exact component={Login} />
           </Switch>
         </Drawer>

@@ -73,7 +73,7 @@ class ResponsiveDrawer extends React.Component {
                         </ListItem>
                     </NavLink>
                     <Divider />
-                    {['User', 'Product', 'Order'].map((text, index) => (
+                    {['Users', 'Products', 'Orders'].map((text, index) => (
                         <NavLink
                             key={text}
                             to={'/' + text.toLowerCase()}
