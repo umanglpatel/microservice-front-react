@@ -207,26 +207,35 @@ class User extends React.Component {
             username: 'test',
             password: 'test'
         };
+        let token = null;
+        let tokenType = null;
         data = Object.keys(data).map(function (key) {
             return encodeURIComponent(key) + '=' + encodeURIComponent(data[key])
         }).join('&');
-        axios.post('http://localhost:8080/oauth/token', data, {
+        axios.post('/oauth/token', data, {
             headers: { 'authorization': 'Basic Y2xpZW50OmNsaWVudA==', 'Content-Type': 'application/x-www-form-urlencoded' }
         })
             .then(response => {
                 console.log(response.data);
                 // USER_TOKEN = response.data.access_token;
                 console.log('userresponse ' + response.data.access_token);
+                token = response.data.access_token;
+                tokenType = response.data.token_type;
+            }).then(response => {
+                axios.get('/orders/v1.0/orders/test', { headers: { 'authorization': tokenType + ' ' + token } })
+                    .then(res => {
+                        this.setState({ ...this.state, message: res.data });
+                    })
             })
             .catch((error) => {
                 console.log('error ' + error);
             });
 
         // axios.get('/v1.0/sprints/test')
-        axios.get('/orders/v1.0/orders/test')
-            .then(res => {
-                this.setState({ ...this.state, message: res.data });
-            });
+        // axios.get('/orders/v1.0/orders/test', { headers: { 'authorization': tokenType + ' ' + token } })
+        //     .then(res => {
+        //         this.setState({ ...this.state, message: res.data });
+        //     });
 
 
     }
