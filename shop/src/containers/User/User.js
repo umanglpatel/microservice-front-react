@@ -15,6 +15,8 @@ import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 
+import axios from '../../base-axios';
+
 let counter = 0;
 function createData(fname, lname, phoneNo) {
     counter += 1;
@@ -173,6 +175,7 @@ const styles = theme => ({
 
 class User extends React.Component {
     state = {
+        message: 'hi',
         order: 'asc',
         orderBy: 'fname',
         selected: [],
@@ -194,6 +197,39 @@ class User extends React.Component {
         page: 0,
         rowsPerPage: 5,
     };
+
+    componentDidMount() {
+        let data = {
+            grant_type: 'password',
+            client_id: 'client',
+            client_secret: 'client',
+            scope: 'write',
+            username: 'test',
+            password: 'test'
+        };
+        data = Object.keys(data).map(function (key) {
+            return encodeURIComponent(key) + '=' + encodeURIComponent(data[key])
+        }).join('&');
+        axios.post('http://localhost:8080/oauth/token', data, {
+            headers: { 'authorization': 'Basic Y2xpZW50OmNsaWVudA==', 'Content-Type': 'application/x-www-form-urlencoded' }
+        })
+            .then(response => {
+                console.log(response.data);
+                // USER_TOKEN = response.data.access_token;
+                console.log('userresponse ' + response.data.access_token);
+            })
+            .catch((error) => {
+                console.log('error ' + error);
+            });
+
+        // axios.get('/v1.0/sprints/test')
+        axios.get('/orders/v1.0/orders/test')
+            .then(res => {
+                this.setState({ ...this.state, message: res.data });
+            });
+
+
+    }
 
     handleRequestSort = (event, property) => {
         const orderBy = property;
@@ -231,6 +267,7 @@ class User extends React.Component {
 
         return (
             <Paper className={classes.root}>
+                {this.state.message}
                 <EnhancedTableToolbar numSelected={selected.length} />
                 <div className={classes.tableWrapper}>
                     <Table className={classes.table} aria-labelledby="tableTitle">

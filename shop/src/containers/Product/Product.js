@@ -15,6 +15,8 @@ import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 
+import axios from '../../base-axios';
+
 let counter = 0;
 function createData(name, brand, category) {
     counter += 1;
@@ -173,6 +175,7 @@ const styles = theme => ({
 
 class Product extends React.Component {
     state = {
+        message: 'hi',
         order: 'asc',
         orderBy: 'name',
         selected: [],
@@ -194,6 +197,14 @@ class Product extends React.Component {
         page: 0,
         rowsPerPage: 5,
     };
+
+    componentDidMount() {
+        // axios.get('/v1.0/sprints/test')
+        axios.get('http://localhost:8083/v1.0/orders/test')
+            .then(res => {
+                this.setState({ ...this.state, message: res.data });
+            });
+    }
 
     handleRequestSort = (event, property) => {
         const orderBy = property;
@@ -223,6 +234,7 @@ class Product extends React.Component {
 
         return (
             <Paper className={classes.root}>
+                {this.state.message}
                 <EnhancedTableToolbar numSelected={selected.length} />
                 <div className={classes.tableWrapper}>
                     <Table className={classes.table} aria-labelledby="tableTitle">
