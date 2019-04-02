@@ -6,6 +6,9 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import Paper from '@material-ui/core/Paper';
 import withStyles from '@material-ui/core/styles/withStyles';
+import { connect } from 'react-redux';
+
+import * as actions from '../../store/actions/index';
 
 const styles = theme => ({
     main: {
@@ -39,42 +42,79 @@ const styles = theme => ({
     },
 });
 
-function login(props) {
-    const { classes } = props;
+class Login extends React.Component {
 
-    return (
-        <main className={classes.main}>
-            <Paper className={classes.paper}>
-                <form className={classes.form}>
-                    <FormControl margin="normal" required fullWidth>
-                        <InputLabel htmlFor="username">User Name</InputLabel>
-                        <Input id="username" name="user" autoComplete="username" autoFocus />
-                    </FormControl>
-                    <FormControl margin="normal" required fullWidth>
-                        <InputLabel htmlFor="password">Password</InputLabel>
-                        <Input name="password" type="password" id="password" autoComplete="current-password" />
-                    </FormControl>
-                    {/* <FormControlLabel
+    state = {
+        username: null,
+        password: null
+    }
+
+    handleSubmit = (event) => {
+        event.preventDefault(); //prevents event bubbeling and reloading of the page
+        this.props.onAuth(this.state.username, this.state.password);
+    }
+
+    handleValueChange = (event) => {
+        event.preventDefault();
+        if (event.target.id === 'username') {
+            this.setState({ ...this.state, username: event.target.value });
+        }
+        if (event.target.id === 'password') {
+            this.setState({ ...this.state, password: event.target.value });
+        }
+    }
+
+    render() {
+        const { classes } = this.props;
+        return (
+            <main className={classes.main}>
+                <Paper className={classes.paper}>
+                    <form className={classes.form} onSubmit={this.handleSubmit}>
+                        <FormControl margin="normal" required fullWidth>
+                            <InputLabel htmlFor="username">User Name</InputLabel>
+                            <Input id="username" name="user" autoComplete="username" onChange={this.handleValueChange} autoFocus />
+                        </FormControl>
+                        <FormControl margin="normal" required fullWidth>
+                            <InputLabel htmlFor="password">Password</InputLabel>
+                            <Input name="password" type="password" id="password" onChange={this.handleValueChange} autoComplete="current-password" />
+                        </FormControl>
+                        {/* <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
                         label="Remember me"
                     /> */}
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                    >
-                        Log in
-          </Button>
-                </form>
-            </Paper>
-        </main>
-    );
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit} >
+                            Log in
+                        </Button>
+                    </form>
+                </Paper>
+            </main>
+        );
+    }
 }
 
-login.propTypes = {
+Login.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(login);
+const mapStateToProps = state => {
+    return {
+        loading: state.auth.loading,
+        error: state.auth.error,
+        isAuthenticated: state.auth.token != null,
+        authRedirectPath: state.auth.authRedirectPath
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onAuth: (email, password) => dispatch(actions.auth(email, password)),
+        onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/'))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Login));
