@@ -39,30 +39,32 @@ export const checkAuthTimeOut = (expirationTime) => {
     }
 }
 
-export const auth = (email, password, isSignUp) => {
+export const auth = (username, password) => {
     return dispatch => {
         dispatch(authStart());
-        const authData = {
-            email: email,
-            password: password,
-            returnSecureToken: true
-        }
-        let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyCjQS9oNVh9axiN8AlV-u8sN62DPPhSjsw';
-        if (!isSignUp) {
-            url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCjQS9oNVh9axiN8AlV-u8sN62DPPhSjsw';
-        }
-        axios.post(url, authData)
-            .then(response => {
-                const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000);
-                localStorage.setItem('token', response.data.idToken);
-                localStorage.setItem('expirationDate', expirationDate);
-                localStorage.setItem('userId', response.data.localId);
-                dispatch(authSuccess(response.data.idToken, response.data.localId));
-                dispatch(checkAuthTimeOut(response.data.expiresIn));
-            })
-            .catch(err => {
-                dispatch(authFail(err.response.data.error));
-            });
+        let data = {
+            grant_type: 'password',
+            client_id: 'client',
+            client_secret: 'client',
+            scope: 'write',
+            username: username,
+            password: password
+        };
+        let token = null;
+        data = Object.keys(data).map(function (key) {
+            return encodeURIComponent(key) + '=' + encodeURIComponent(data[key])
+        }).join('&');
+        axios.post('/oauth/token', data, {
+            headers: { 'authorization': 'Basic Y2xpZW50OmNsaWVudA==', 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).then(response => {
+            console.log(response.data);
+            token = response.data.token_type + ' ' + response.data.access_token;
+            dispatch(authSuccess(token, data.username));
+            // dispatch(checkAuthTimeOut(response.data.expiresIn));
+        }).catch((error) => {
+            dispatch(authFail(error.response.data.error));
+            console.log('error ' + error);
+        });
     };
 };
 

@@ -14,8 +14,10 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
+import { connect } from 'react-redux';
 
 import axios from '../../base-axios';
+// import * as actions from '../../store/actions/index';
 
 let counter = 0;
 function createData(fname, lname, phoneNo) {
@@ -175,7 +177,7 @@ const styles = theme => ({
 
 class User extends React.Component {
     state = {
-        message: 'hi',
+        message: 'Requesting...',
         order: 'asc',
         orderBy: 'fname',
         selected: [],
@@ -199,37 +201,13 @@ class User extends React.Component {
     };
 
     componentDidMount() {
-        let data = {
-            grant_type: 'password',
-            client_id: 'client',
-            client_secret: 'client',
-            scope: 'write',
-            username: 'test',
-            password: 'test'
-        };
-        let token = null;
-        let tokenType = null;
-        data = Object.keys(data).map(function (key) {
-            return encodeURIComponent(key) + '=' + encodeURIComponent(data[key])
-        }).join('&');
-        axios.post('/oauth/token', data, {
-            headers: { 'authorization': 'Basic Y2xpZW50OmNsaWVudA==', 'Content-Type': 'application/x-www-form-urlencoded' }
-        })
-            .then(response => {
-                console.log(response.data);
-                // USER_TOKEN = response.data.access_token;
-                console.log('userresponse ' + response.data.access_token);
-                token = response.data.access_token;
-                tokenType = response.data.token_type;
-            }).then(response => {
-                axios.get('/orders/v1.0/orders/test', { headers: { 'authorization': tokenType + ' ' + token } })
-                    .then(res => {
-                        this.setState({ ...this.state, message: res.data });
-                    })
-            })
-            .catch((error) => {
-                console.log('error ' + error);
-            });
+        axios.get('/orders/v1.0/orders/test', {
+            headers: { 'authorization': this.props.token }
+        }).then(res => {
+            this.setState({ ...this.state, message: res.data });
+        }).catch((error) => {
+            console.log('error ' + error);
+        });
 
         // axios.get('/v1.0/sprints/test')
         // axios.get('/orders/v1.0/orders/test', { headers: { 'authorization': tokenType + ' ' + token } })
@@ -341,4 +319,17 @@ User.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(User);
+const mapStateToProps = state => {
+    return {
+        token: state.auth.token
+    };
+};
+
+// const mapDispatchToProps = dispatch => {
+//     return {
+//         onAuth: (username, password) => dispatch(actions.auth(username, password)),
+//         onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/'))
+//     };
+// };
+
+export default connect(mapStateToProps, null)(withStyles(styles)(User));
