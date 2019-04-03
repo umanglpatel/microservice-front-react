@@ -209,12 +209,20 @@ class User extends React.Component {
             console.log('error ' + error);
         });
 
-        // axios.get('/v1.0/sprints/test')
-        // axios.get('/orders/v1.0/orders/test', { headers: { 'authorization': tokenType + ' ' + token } })
-        //     .then(res => {
-        //         this.setState({ ...this.state, message: res.data });
-        //     });
-
+        axios.get('/users/v1.0/users/', {
+            headers: { 'authorization': this.props.token }
+        }).then(res => {
+            let data = [];
+            res.data.map(user => {
+                let count = 0;
+                data[count] = createData(user.firstName, user.lastName, user.phoneNo);
+                count = count + 1;
+                return data;
+            })
+            this.setState({ ...this.state, data: data });
+        }).catch((error) => {
+            console.log('error ' + error);
+        });
 
     }
 
