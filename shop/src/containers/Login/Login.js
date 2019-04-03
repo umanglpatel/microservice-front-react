@@ -7,6 +7,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Paper from '@material-ui/core/Paper';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 import * as actions from '../../store/actions/index';
 
@@ -66,8 +67,13 @@ class Login extends React.Component {
 
     render() {
         const { classes } = this.props;
+        let authRedirect = null;
+        if (this.props.isAuthenticated) {
+            authRedirect = <Redirect to="/users" />;
+        }
         return (
-            <main className={classes.main}>
+            < main className={classes.main} >
+                {authRedirect}
                 <Paper className={classes.paper}>
                     <form className={classes.form} onSubmit={this.handleSubmit}>
                         <FormControl margin="normal" required fullWidth>
@@ -92,7 +98,7 @@ class Login extends React.Component {
                         </Button>
                     </form>
                 </Paper>
-            </main>
+            </main >
         );
     }
 }
