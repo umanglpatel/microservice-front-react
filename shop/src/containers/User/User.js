@@ -17,6 +17,7 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 import { connect } from 'react-redux';
 
 import axios from '../../base-axios';
+import AddUser from './AddUser/AddUser';
 // import * as actions from '../../store/actions/index';
 
 let counter = 0;
@@ -184,6 +185,7 @@ class User extends React.Component {
         data: [],
         page: 0,
         rowsPerPage: 5,
+        isAddUserOpen: false
     };
 
     componentDidMount() {
@@ -301,6 +303,7 @@ class User extends React.Component {
                     onChangePage={this.handleChangePage}
                     onChangeRowsPerPage={this.handleChangeRowsPerPage}
                 />
+                <AddUser />
             </Paper>
         );
     }

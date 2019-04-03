@@ -15,7 +15,7 @@ const styles = theme => ({
 function PrimaryButton(props) {
     const { classes } = props;
     return (
-        <Button variant="contained" color="primary" className={classes.button}>
+        <Button variant="contained" color="primary" className={classes.button} onClick={props.onClick}>
             {props.children}
         </Button>
     );
