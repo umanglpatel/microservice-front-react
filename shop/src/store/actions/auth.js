@@ -59,6 +59,8 @@ export const auth = (username, password) => {
         }).then(response => {
             console.log(response.data);
             token = response.data.token_type + ' ' + response.data.access_token;
+            localStorage.setItem('token', token);
+            localStorage.setItem('username', username);
             dispatch(authSuccess(token, data.username));
             // dispatch(checkAuthTimeOut(response.data.expiresIn));
         }).catch((error) => {
@@ -81,14 +83,14 @@ export const authCheckState = () => {
         if (!token) {
             dispatch(logout());
         } else {
-            const expirationDate = new Date(localStorage.getItem('expirationDate'));
-            if (expirationDate <= new Date()) {
-                dispatch(logout());
-            } else {
-                const userId = localStorage.getItem('userId');
-                dispatch(authSuccess(token, userId));
-                dispatch(checkAuthTimeOut((expirationDate.getTime() - new Date().getTime()) / 1000));
-            }
+            // const expirationDate = new Date(localStorage.getItem('expirationDate'));
+            // if (expirationDate <= new Date()) {
+            // dispatch(logout());
+            // } else {
+            const userId = localStorage.getItem('userId');
+            dispatch(authSuccess(token, userId));
+            // dispatch(checkAuthTimeOut((expirationDate.getTime() - new Date().getTime()) / 1000));
+            // }
         }
     };
 };
