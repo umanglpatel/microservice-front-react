@@ -181,21 +181,7 @@ class User extends React.Component {
         order: 'asc',
         orderBy: 'fname',
         selected: [],
-        data: [
-            createData('Cupcake', 305, 3.7),
-            createData('Donut', 452, 25.0),
-            createData('Eclair', 262, 16.0),
-            createData('Frozen yoghurt', 159),
-            createData('Gingerbread', 356, 16.0),
-            createData('Honeycomb', 408, 3.2),
-            createData('Ice cream sandwich', 237, 9.0),
-            createData('Jelly Bean', 375, 0.0),
-            createData('KitKat', 518, 26.0),
-            createData('Lollipop', 392, 0.2),
-            createData('Marshmallow', 318, 0),
-            createData('Nougat', 360, 19.0),
-            createData('Oreo', 437, 18.0),
-        ],
+        data: [],
         page: 0,
         rowsPerPage: 5,
     };
@@ -214,16 +200,13 @@ class User extends React.Component {
         }).then(res => {
             let data = [];
             res.data.map(user => {
-                let count = 0;
-                data[count] = createData(user.firstName, user.lastName, user.phoneNo);
-                count = count + 1;
+                data.push(createData(user.firstName, user.lastName, user.phoneNo));
                 return data;
             })
             this.setState({ ...this.state, data: data });
         }).catch((error) => {
             console.log('error ' + error);
         });
-
     }
 
     handleRequestSort = (event, property) => {
