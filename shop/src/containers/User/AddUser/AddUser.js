@@ -25,6 +25,19 @@ class AddUser extends React.Component {
         this.setState({ open: false });
     };
 
+    handleValueChange = (event) => {
+        event.preventDefault();
+        const value = event.target.value;
+        switch (event.target.id) {
+            case "firstname": this.setState({ ...this.state, firstname: value }); break;
+            case "lastname": this.setState({ ...this.state, lastname: value }); break;
+            case "username": this.setState({ ...this.state, username: value }); break;
+            case "phone": this.setState({ ...this.state, phone: value }); break;
+            case "password": this.setState({ ...this.state, password: value }); break;
+            default: ;
+        }
+    }
+
     render() {
         return (
             <div>
@@ -38,11 +51,11 @@ class AddUser extends React.Component {
                 >
                     <DialogTitle id="form-dialog-title">Add User</DialogTitle>
                     <DialogContent>
-                        <TextField autoFocus margin="dense" id="firstname" label="First Name" fullWidth onChange={(e) => console.log(e.target.value)} />
-                        <TextField autoFocus margin="dense" id="lastname" label="Last Name" fullWidth />
-                        <TextField autoFocus margin="dense" id="username" label="User Name" fullWidth />
-                        <TextField autoFocus margin="dense" id="password" label="password" type="password" fullWidth />
-                        <TextField autoFocus margin="dense" id="phone" label="Phone No" fullWidth />
+                        <TextField autoFocus margin="dense" id="firstname" label="First Name" fullWidth onChange={this.handleValueChange} />
+                        <TextField autoFocus margin="dense" id="lastname" label="Last Name" fullWidth onChange={this.handleValueChange} />
+                        <TextField autoFocus margin="dense" id="username" label="User Name" fullWidth onChange={this.handleValueChange} />
+                        <TextField autoFocus margin="dense" id="password" label="password" type="password" fullWidth onChange={this.handleValueChange} />
+                        <TextField autoFocus margin="dense" id="phone" label="Phone No" fullWidth onChange={this.handleValueChange} />
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">
