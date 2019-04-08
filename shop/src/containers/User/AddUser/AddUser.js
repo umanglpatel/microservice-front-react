@@ -42,8 +42,6 @@ class AddUser extends React.Component {
     }
 
     handleClickOK = () => {
-        const x = this.props.reload;
-        x(true);
         let data = {
             firstName: this.state.firstname,
             lastName: this.state.lastname,
@@ -59,6 +57,7 @@ class AddUser extends React.Component {
         }).then(response => {
             // console.log(response.data);
             this.handleClose();
+            this.props.addUserToData(data);
         }).catch((error) => {
             console.log('error ' + error);
         });
