@@ -6,6 +6,9 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import PrimaryButton from '../../../components/PrimaryButton/PrimaryButton';
+import { connect } from 'react-redux';
+
+import axios from '../../../base-axios';
 
 class AddUser extends React.Component {
     state = {
@@ -38,6 +41,29 @@ class AddUser extends React.Component {
         }
     }
 
+    handleClickOK = () => {
+        const x = this.props.reload;
+        x(true);
+        let data = {
+            firstName: this.state.firstname,
+            lastName: this.state.lastname,
+            userName: this.state.username,
+            password: this.state.password,
+            phoneNo: this.state.phone
+        };
+        // data = Object.keys(data).map(function (key) {
+        //     return encodeURIComponent(key) + '=' + encodeURIComponent(data[key])
+        // }).join('&');
+        axios.post('/users/v1.0/users/', data, {
+            headers: { 'authorization': this.props.token }
+        }).then(response => {
+            // console.log(response.data);
+            this.handleClose();
+        }).catch((error) => {
+            console.log('error ' + error);
+        });
+    }
+
     render() {
         return (
             <div>
@@ -61,7 +87,7 @@ class AddUser extends React.Component {
                         <Button onClick={this.handleClose} color="primary">
                             Cancel
                         </Button>
-                        <Button onClick={this.handleClose} color="primary">
+                        <Button onClick={this.handleClickOK} color="primary">
                             OK
                         </Button>
                     </DialogActions>
@@ -71,4 +97,10 @@ class AddUser extends React.Component {
     }
 }
 
-export default AddUser;
+const mapStateToProps = state => {
+    return {
+        token: state.auth.token
+    };
+};
+
+export default connect(mapStateToProps, null)(AddUser);

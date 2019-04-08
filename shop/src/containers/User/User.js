@@ -184,7 +184,8 @@ class User extends React.Component {
         data: [],
         page: 0,
         rowsPerPage: 5,
-        isAddUserOpen: false
+        isAddUserOpen: false,
+        reloadUsers: false
     };
 
     componentDidMount() {
@@ -236,6 +237,11 @@ class User extends React.Component {
     handleChangeRowsPerPage = event => {
         this.setState({ rowsPerPage: event.target.value });
     };
+
+    handleReloadUsers = (value) => {
+        console.log(value);
+        this.setState({ ...this.state, reloadUsers: value });
+    }
 
     isSelected = id => this.state.selected.indexOf(id) !== -1;
 
@@ -302,7 +308,7 @@ class User extends React.Component {
                     onChangePage={this.handleChangePage}
                     onChangeRowsPerPage={this.handleChangeRowsPerPage}
                 />
-                <AddUser />
+                <AddUser reload={this.handleReloadUsers} />
             </Paper>
         );
     }
