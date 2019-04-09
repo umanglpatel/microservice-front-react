@@ -68,7 +68,7 @@ class Login extends React.Component {
     render() {
         const { classes } = this.props;
         let authRedirect = null;
-        if (this.props.isAuthenticated) {
+        if (localStorage.getItem('token')) {
             authRedirect = <Redirect to="/users" />;
         }
         return (

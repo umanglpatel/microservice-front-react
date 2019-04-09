@@ -189,7 +189,7 @@ class User extends React.Component {
 
     componentDidMount() {
         axios.get('/orders/v1.0/orders/test', {
-            headers: { 'authorization': this.props.token }
+            headers: { 'authorization': localStorage.getItem('token') }
         }).then(res => {
             this.setState({ ...this.state, message: res.data });
         }).catch((error) => {
@@ -197,7 +197,7 @@ class User extends React.Component {
         });
 
         axios.get('/users/v1.0/users/', {
-            headers: { 'authorization': this.props.token }
+            headers: { 'authorization': localStorage.getItem('token') }
         }).then(res => {
             let data = [];
             res.data.map(user => {
