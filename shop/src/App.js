@@ -24,7 +24,7 @@ class App extends Component {
         <Redirect to="/" />
       </Switch>
     );
-    if (this.props.isAuthenticated) {
+    if (localStorage.getItem('token')) {
       routes = (
         <Switch>
           <Route path="/login" component={Login} />
