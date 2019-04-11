@@ -16,6 +16,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 
 import axios from '../../base-axios';
+import AddProduct from './AddProduct/AddProduct';
 
 let counter = 0;
 function createData(name, brand, category) {
@@ -196,7 +197,6 @@ class Product extends React.Component {
         axios.get('/products/v1.0/products/', {
             headers: { 'authorization': localStorage.getItem('token') }
         }).then(res => {
-            console.log(res.data);
             let data = [];
             res.data.map(product => {
                 data.push(createData(product.name, product.brand, product.category));
@@ -226,6 +226,10 @@ class Product extends React.Component {
     handleChangeRowsPerPage = event => {
         this.setState({ rowsPerPage: event.target.value });
     };
+
+    handleAddProductToData = (value) => {
+        this.setState({ ...this.state, data: [...this.state.data, createData(value.name, value.brand, value.category)] });
+    }
 
     isSelected = id => this.state.selected.indexOf(id) !== -1;
 
@@ -292,6 +296,7 @@ class Product extends React.Component {
                     onChangePage={this.handleChangePage}
                     onChangeRowsPerPage={this.handleChangeRowsPerPage}
                 />
+                <AddProduct addProductToData={this.handleAddProductToData} />
             </Paper>
         );
     }

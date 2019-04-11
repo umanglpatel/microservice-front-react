@@ -10,14 +10,12 @@ import { connect } from 'react-redux';
 
 import axios from '../../../base-axios';
 
-class AddUser extends React.Component {
+class AddProduct extends React.Component {
     state = {
         open: false,
-        firstname: '',
-        lastname: '',
-        username: '',
-        phone: '',
-        password: ''
+        name: '',
+        brand: '',
+        category: ''
     };
 
     handleClickOpen = () => {
@@ -32,55 +30,52 @@ class AddUser extends React.Component {
         event.preventDefault();
         const value = event.target.value;
         switch (event.target.id) {
-            case "firstname": this.setState({ ...this.state, firstname: value }); break;
-            case "lastname": this.setState({ ...this.state, lastname: value }); break;
-            case "username": this.setState({ ...this.state, username: value }); break;
-            case "phone": this.setState({ ...this.state, phone: value }); break;
-            case "password": this.setState({ ...this.state, password: value }); break;
+            case "name": this.setState({ ...this.state, name: value }); break;
+            case "brand": this.setState({ ...this.state, brand: value }); break;
+            case "category": this.setState({ ...this.state, category: value }); break;
             default: ;
         }
     }
 
     handleClickOK = () => {
         let data = {
-            firstName: this.state.firstname,
-            lastName: this.state.lastname,
-            userName: this.state.username,
-            password: this.state.password,
-            phoneNo: this.state.phone
+            name: this.state.name,
+            brand: this.state.brand,
+            category: this.state.category
         };
         // data = Object.keys(data).map(function (key) {
         //     return encodeURIComponent(key) + '=' + encodeURIComponent(data[key])
         // }).join('&');
-        axios.post('/users/v1.0/users/', data, {
-            headers: { 'authorization': this.props.token }
+        axios.post('/products/v1.0/products/', data, {
+            headers: { 'authorization': localStorage.getItem('token') }
         }).then(response => {
             // console.log(response.data);
             this.handleClose();
-            this.props.addUserToData(data);
-        }).catch((error) => {
-            console.log('error ' + error);
-        });
+            this.props.addProductToData(data);
+        }).then(response => {
+            this.setState({ ...this.state, name: null, brand: null, category: null })
+        })
+            .catch((error) => {
+                console.log('error ' + error);
+            });
     }
 
     render() {
         return (
             <div>
                 <PrimaryButton color="primary" onClick={this.handleClickOpen}>
-                    Add User
+                    Add Product
                 </PrimaryButton>
                 <Dialog
                     open={this.state.open}
                     onClose={this.handleClose}
                     aria-labelledby="form-dialog-title"
                 >
-                    <DialogTitle id="form-dialog-title">Add User</DialogTitle>
+                    <DialogTitle id="form-dialog-title">Add Product</DialogTitle>
                     <DialogContent>
-                        <TextField autoFocus margin="dense" id="firstname" label="First Name" fullWidth onChange={this.handleValueChange} />
-                        <TextField margin="dense" id="lastname" label="Last Name" fullWidth onChange={this.handleValueChange} />
-                        <TextField margin="dense" id="username" label="User Name" fullWidth onChange={this.handleValueChange} />
-                        <TextField margin="dense" id="password" label="password" type="password" fullWidth onChange={this.handleValueChange} />
-                        <TextField margin="dense" id="phone" label="Phone No" fullWidth onChange={this.handleValueChange} />
+                        <TextField autoFocus margin="dense" id="name" label="Name" fullWidth onChange={this.handleValueChange} />
+                        <TextField margin="dense" id="brand" label="Brand" fullWidth onChange={this.handleValueChange} />
+                        <TextField margin="dense" id="category" label="Category" fullWidth onChange={this.handleValueChange} />
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">
@@ -102,4 +97,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(AddUser);
+export default connect(mapStateToProps, null)(AddProduct);
