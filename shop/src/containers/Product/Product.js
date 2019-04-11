@@ -98,7 +98,6 @@ class EnhancedTableHead extends React.Component {
 EnhancedTableHead.propTypes = {
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
     order: PropTypes.string.isRequired,
     orderBy: PropTypes.string.isRequired,
     rowCount: PropTypes.number.isRequired,
@@ -179,31 +178,34 @@ class Product extends React.Component {
         order: 'asc',
         orderBy: 'name',
         selected: [],
-        data: [
-            createData('Cupcake', 305, 3.7),
-            createData('Donut', 452, 25.0),
-            createData('Eclair', 262, 16.0),
-            createData('Frozen yoghurt', 159),
-            createData('Gingerbread', 356, 16.0),
-            createData('Honeycomb', 408, 3.2),
-            createData('Ice cream sandwich', 237, 9.0),
-            createData('Jelly Bean', 375, 0.0),
-            createData('KitKat', 518, 26.0),
-            createData('Lollipop', 392, 0.2),
-            createData('Marshmallow', 318, 0),
-            createData('Nougat', 360, 19.0),
-            createData('Oreo', 437, 18.0),
-        ],
+        data: [],
         page: 0,
         rowsPerPage: 5,
     };
 
     componentDidMount() {
-        // axios.get('/v1.0/sprints/test')
-        axios.get('http://localhost:8083/v1.0/orders/test')
-            .then(res => {
-                this.setState({ ...this.state, message: res.data });
-            });
+
+        axios.get('/orders/v1.0/orders/test', {
+            headers: { 'authorization': localStorage.getItem('token') }
+        }).then(res => {
+            this.setState({ ...this.state, message: res.data });
+        }).catch((error) => {
+            console.log('error ' + error);
+        });
+
+        axios.get('/products/v1.0/products/', {
+            headers: { 'authorization': localStorage.getItem('token') }
+        }).then(res => {
+            console.log(res.data);
+            let data = [];
+            res.data.map(product => {
+                data.push(createData(product.name, product.brand, product.category));
+                return data;
+            })
+            this.setState({ ...this.state, data: data });
+        }).catch((error) => {
+            console.log('[Products] error ' + error);
+        });
     }
 
     handleRequestSort = (event, property) => {
