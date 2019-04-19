@@ -53,7 +53,7 @@ class AddUser extends React.Component {
         //     return encodeURIComponent(key) + '=' + encodeURIComponent(data[key])
         // }).join('&');
         axios.post('/users/v1.0/users/', data, {
-            headers: { 'authorization': this.props.token }
+            headers: { 'authorization': localStorage.getItem('token') }
         }).then(response => {
             // console.log(response.data);
             this.handleClose();

@@ -17,6 +17,7 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 
 import axios from '../../base-axios';
 import AddProduct from './AddProduct/AddProduct';
+import ErrorDialog from '../../components/ErrorDialog/ErrorDialog';
 
 let counter = 0;
 function createData(name, brand, category) {
@@ -182,6 +183,15 @@ class Product extends React.Component {
         data: [],
         page: 0,
         rowsPerPage: 5,
+        isError: false
+    };
+
+    handleErrorOpen = () => {
+        this.setState({ ...this.state, isError: true });
+    };
+
+    handleErrorClose = () => {
+        this.setState({ ...this.state, isError: false });
     };
 
     componentDidMount() {
@@ -204,6 +214,7 @@ class Product extends React.Component {
             })
             this.setState({ ...this.state, data: data });
         }).catch((error) => {
+            this.setState({ ...this.state, isError: true });
             console.log('[Products] error ' + error);
         });
     }
@@ -239,65 +250,72 @@ class Product extends React.Component {
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
         return (
-            <Paper className={classes.root}>
-                {this.state.message}
-                <EnhancedTableToolbar numSelected={selected.length} />
-                <div className={classes.tableWrapper}>
-                    <Table className={classes.table} aria-labelledby="tableTitle">
-                        <EnhancedTableHead
-                            numSelected={selected.length}
-                            order={order}
-                            orderBy={orderBy}
-                            onRequestSort={this.handleRequestSort}
-                            rowCount={data.length}
-                        />
-                        <TableBody>
-                            {stableSort(data, getSorting(order, orderBy))
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map(n => {
-                                    const isSelected = this.isSelected(n.id);
-                                    return (
-                                        <TableRow
-                                            hover
-                                            role="checkbox"
-                                            aria-checked={isSelected}
-                                            tabIndex={-1}
-                                            key={n.id}
-                                            selected={isSelected}
-                                        >
-                                            <TableCell component="th" scope="row">
-                                                {n.name}
-                                            </TableCell>
-                                            <TableCell align="right">{n.brand}</TableCell>
-                                            <TableCell align="right">{n.category}</TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                            {emptyRows > 0 && (
-                                <TableRow style={{ height: 49 * emptyRows }}>
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </div>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={data.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    backIconButtonProps={{
-                        'aria-label': 'Previous Page',
-                    }}
-                    nextIconButtonProps={{
-                        'aria-label': 'Next Page',
-                    }}
-                    onChangePage={this.handleChangePage}
-                    onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                />
-                <AddProduct addProductToData={this.handleAddProductToData} />
-            </Paper>
+            <div>
+                <ErrorDialog
+                    open={this.state.isError}
+                    handleErrorClose={this.handleErrorClose}
+                    errorTitle="Product Service Down"
+                    errorText="Product service is feeling down lately. Please come again later maybe!" />
+                <Paper className={classes.root}>
+                    {this.state.message}
+                    <EnhancedTableToolbar numSelected={selected.length} />
+                    <div className={classes.tableWrapper}>
+                        <Table className={classes.table} aria-labelledby="tableTitle">
+                            <EnhancedTableHead
+                                numSelected={selected.length}
+                                order={order}
+                                orderBy={orderBy}
+                                onRequestSort={this.handleRequestSort}
+                                rowCount={data.length}
+                            />
+                            <TableBody>
+                                {stableSort(data, getSorting(order, orderBy))
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map(n => {
+                                        const isSelected = this.isSelected(n.id);
+                                        return (
+                                            <TableRow
+                                                hover
+                                                role="checkbox"
+                                                aria-checked={isSelected}
+                                                tabIndex={-1}
+                                                key={n.id}
+                                                selected={isSelected}
+                                            >
+                                                <TableCell component="th" scope="row">
+                                                    {n.name}
+                                                </TableCell>
+                                                <TableCell align="right">{n.brand}</TableCell>
+                                                <TableCell align="right">{n.category}</TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                                {emptyRows > 0 && (
+                                    <TableRow style={{ height: 49 * emptyRows }}>
+                                        <TableCell colSpan={6} />
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={data.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        backIconButtonProps={{
+                            'aria-label': 'Previous Page',
+                        }}
+                        nextIconButtonProps={{
+                            'aria-label': 'Next Page',
+                        }}
+                        onChangePage={this.handleChangePage}
+                        onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                    />
+                    <AddProduct addProductToData={this.handleAddProductToData} />
+                </Paper>
+            </div>
         );
     }
 }
