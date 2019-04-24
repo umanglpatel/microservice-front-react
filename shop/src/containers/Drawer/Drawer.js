@@ -100,7 +100,7 @@ class ResponsiveDrawer extends React.Component {
                         >
                         </IconButton>
                         <Typography variant="h6" color="inherit" noWrap>
-                            Test Title
+                            Microservices Demo React App
             </Typography>
                     </Toolbar>
                 </AppBar>

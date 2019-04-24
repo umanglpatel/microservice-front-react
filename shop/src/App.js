@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
-import Drawer from './containers/Drawer/Drawer';
 import { connect } from 'react-redux';
 
 import './App.css';
+import Drawer from './containers/Drawer/Drawer';
 import Login from './containers/Login/Login';
 import User from './containers/User/User';
 import Product from './containers/Product/Product';

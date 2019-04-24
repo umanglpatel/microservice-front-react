@@ -251,7 +251,7 @@ class User extends React.Component {
 
         return (
             <Paper className={classes.root}>
-                {this.state.message}
+                {/* {this.state.message} */}
                 <EnhancedTableToolbar numSelected={selected.length} />
                 <div className={classes.tableWrapper}>
                     <Table className={classes.table} aria-labelledby="tableTitle">

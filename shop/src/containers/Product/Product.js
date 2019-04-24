@@ -257,7 +257,7 @@ class Product extends React.Component {
                     errorTitle="Product Service Down"
                     errorText="Product service is feeling down lately. Please come again later maybe!" />
                 <Paper className={classes.root}>
-                    {this.state.message}
+                    {/* {this.state.message} */}
                     <EnhancedTableToolbar numSelected={selected.length} />
                     <div className={classes.tableWrapper}>
                         <Table className={classes.table} aria-labelledby="tableTitle">
